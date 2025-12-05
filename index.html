@@ -1,636 +1,636 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kelime Kartları ve Quiz</title>
-    <style>
-        /* --- ORİJİNAL KART STİLLERİ --- */
-        body {
-            background-color: #f0f2f5;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 30px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            margin: 0;
-            justify-content: flex-start;
-            user-select: none;
-        }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelime Kartları ve Quiz</title>
+    <style>
+        /* --- ORİJİNAL KART STİLLERİ --- */
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            justify-content: flex-start;
+            user-select: none;
+        }
 
-        .card {
-            background-color: white;
-            width: 350px;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            position: relative;
-            margin-top: 20px;
-            cursor: pointer;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                        box-shadow 0.2s ease, 
-                        opacity 0.3s ease;
-            opacity: 0;
-            transform: translateY(15px) scale(0.95);
-        }
+        .card {
+            background-color: white;
+            width: 350px;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                        box-shadow 0.2s ease, 
+                        opacity 0.3s ease;
+            opacity: 0;
+            transform: translateY(15px) scale(0.95);
+        }
 
-        .card.active {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-        
-        .card:active {
-            transform: scale(0.97);
-        } 
+        .card.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .card:active {
+            transform: scale(0.97);
+        } 
 
-        .word-image-display {
-            width: 100%;
-            height: 180px;
-            margin-bottom: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            background-color: #E3F2FD; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            transition: background 0.3s ease;
-            overflow: hidden; 
-        }
-        
-        .word-image-display img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain; 
-            border-radius: 15px;
-            transition: transform 0.3s ease;
-        }
-        
-        .card:hover .word-image-display { background-color: #BBDEFB; }
-        .card:hover .word-image-display img { transform: scale(1.05); }
+        .word-image-display {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background-color: #E3F2FD; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+            transition: background 0.3s ease;
+            overflow: hidden; 
+        }
+        
+        .word-image-display img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain; 
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover .word-image-display { background-color: #BBDEFB; }
+        .card:hover .word-image-display img { transform: scale(1.05); }
 
-        .header { margin-bottom: 15px; }
-        .word-row { display: flex; align-items: center; gap: 15px; }
-        
-        .speaker-icon-card { 
-            color: #1976D2;
-            font-size: 28px; 
-            cursor: pointer; 
-            padding: 10px;
-            border-radius: 50%;
-            transition: background 0.2s; 
-        }
-        .speaker-icon-card:hover { background: #E3F2FD; }
-        
-        h1 { color: #2D3748; margin: 0; font-size: 36px; font-weight: 800; text-transform: capitalize; }
-        .meaning { color: #718096; margin-top: 5px; margin-left: 58px; font-size: 18px; font-weight: 500;} 
-        
-        .box { 
-            border: 1px solid #E2E8F0; 
-            border-radius: 15px; 
-            padding: 15px; 
-            margin-bottom: 12px; 
-            background: #F7FAFC;
-        }
-        .row { display: flex; gap: 10px; }
-        .tag { font-weight: bold; color: #1976D2; font-size: 14px; min-width: 35px; }
-        .content { flex: 1; }
-        .en-sentence { color: #2D3748; font-size: 16px; margin: 0 0 8px 0; line-height: 1.5; }
-        .highlight { color: #E53E3E; font-weight: bold; background: #fff5f5; padding: 0 4px; border-radius: 4px; }
-        .divider { border-top: 1px dotted #CBD5E0; margin: 5px 0; }
-        .tr-sentence { color: #718096; font-size: 15px; margin: 5px 0 0 0; }
-        .synonyms-text { color: #2D3748; margin: 0; font-size: 15px; }
-        .box.small { padding: 12px 15px; border-radius: 30px; margin-bottom: 0;}
+        .header { margin-bottom: 15px; }
+        .word-row { display: flex; align-items: center; gap: 15px; }
+        
+        .speaker-icon-card { 
+            color: #1976D2;
+            font-size: 28px; 
+            cursor: pointer; 
+            padding: 10px;
+            border-radius: 50%;
+            transition: background 0.2s; 
+        }
+        .speaker-icon-card:hover { background: #E3F2FD; }
+        
+        h1 { color: #2D3748; margin: 0; font-size: 36px; font-weight: 800; text-transform: capitalize; }
+        .meaning { color: #718096; margin-top: 5px; margin-left: 58px; font-size: 18px; font-weight: 500;} 
+        
+        .box { 
+            border: 1px solid #E2E8F0; 
+            border-radius: 15px; 
+            padding: 15px; 
+            margin-bottom: 12px; 
+            background: #F7FAFC;
+        }
+        .row { display: flex; gap: 10px; }
+        .tag { font-weight: bold; color: #1976D2; font-size: 14px; min-width: 35px; }
+        .content { flex: 1; }
+        .en-sentence { color: #2D3748; font-size: 16px; margin: 0 0 8px 0; line-height: 1.5; }
+        .highlight { color: #E53E3E; font-weight: bold; background: #fff5f5; padding: 0 4px; border-radius: 4px; }
+        .divider { border-top: 1px dotted #CBD5E0; margin: 5px 0; }
+        .tr-sentence { color: #718096; font-size: 15px; margin: 5px 0 0 0; }
+        .synonyms-text { color: #2D3748; margin: 0; font-size: 15px; }
+        .box.small { padding: 12px 15px; border-radius: 30px; margin-bottom: 0;}
 
-        .info-bar {
-            color: #718096;
-            margin-top: 20px;
-            font-size: 14px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .nav-hint { font-size: 12px; opacity: 0.6; margin-top: 5px; text-align: center;}
+        .info-bar {
+            color: #718096;
+            margin-top: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-hint { font-size: 12px; opacity: 0.6; margin-top: 5px; text-align: center;}
 
-        /* --- QUIZ VE POPUP STİLLERİ --- */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); 
-            z-index: 999; 
-            display: none;
-            backdrop-filter: blur(3px);
-        }
-        
-        .quiz-container { 
-            display: none; 
-            padding: 25px; 
-            width: 90%;
-            max-width: 400px; 
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            position: fixed; 
-            top: 50%; 
-            left: 50%; 
-            transform: translate(-50%, -50%); 
-            z-index: 1000; 
-            max-height: 90vh;
-            overflow-y: auto;
-        }
+        /* --- QUIZ VE POPUP STİLLERİ --- */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); 
+            z-index: 999; 
+            display: none;
+            backdrop-filter: blur(3px);
+        }
+        
+        .quiz-container { 
+            display: none; 
+            padding: 25px; 
+            width: 90%;
+            max-width: 400px; 
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            z-index: 1000; 
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            font-weight: bold;
-            color: #718096;
-        }
-        
-        .top-buttons { 
-            position: relative; 
-            z-index: 10; 
-            display: flex; 
-            justify-content: center; 
-            width: 100%;
-            margin-top: 20px;
-        }
-        .top-buttons button { 
-            background-color: #1976D2; 
-            color: white; 
-            border: none; 
-            padding: 12px 25px; 
-            font-size: 18px; 
-            cursor: pointer; 
-            border-radius: 50px; 
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: background-color 0.2s;
-        }
-        .top-buttons button:hover { background-color: #1565C0; }
-        
-        .quiz-word-box { 
-            font-size: 30px; 
-            font-weight: 800; 
-            margin-bottom: 10px; 
-            color: #2D3748; 
-            text-transform: capitalize;
-        }
-        .speaker-icon { 
-            font-size: 35px; 
-            color: #f7b731; 
-            margin-bottom: 20px; 
-            display: inline-block;
-            cursor: pointer;
-            transition: transform 0.1s;
-        } 
-        .speaker-icon:hover { transform: scale(1.1); }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #718096;
+        }
+        
+        .top-buttons { 
+            position: relative; 
+            z-index: 10; 
+            display: flex; 
+            justify-content: center; 
+            width: 100%;
+            margin-top: 20px;
+        }
+        .top-buttons button { 
+            background-color: #1976D2; 
+            color: white; 
+            border: none; 
+            padding: 12px 25px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            border-radius: 50px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+        .top-buttons button:hover { background-color: #1565C0; }
+        
+        .quiz-word-box { 
+            font-size: 30px; 
+            font-weight: 800; 
+            margin-bottom: 10px; 
+            color: #2D3748; 
+            text-transform: capitalize;
+        }
+        .speaker-icon { 
+            font-size: 35px; 
+            color: #f7b731; 
+            margin-bottom: 20px; 
+            display: inline-block;
+            cursor: pointer;
+            transition: transform 0.1s;
+        } 
+        .speaker-icon:hover { transform: scale(1.1); }
 
-        .option-button { 
-            width: 100%; padding: 15px 20px; margin-bottom: 10px; 
-            border: 1px solid #E2E8F0; 
-            border-radius: 15px; 
-            background-color: #F7FAFC; 
-            text-align: center; cursor: pointer; font-size: 17px; font-weight: 500; 
-            transition: all 0.2s; position: relative; 
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
-        }
-        .option-button:hover:not(.correct):not(.wrong) { background-color: #EBF8FF; }
+        .option-button { 
+            width: 100%; padding: 15px 20px; margin-bottom: 10px; 
+            border: 1px solid #E2E8F0; 
+            border-radius: 15px; 
+            background-color: #F7FAFC; 
+            text-align: center; cursor: pointer; font-size: 17px; font-weight: 500; 
+            transition: all 0.2s; position: relative; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+        }
+        .option-button:hover:not(.correct):not(.wrong) { background-color: #EBF8FF; }
 
-        .correct { background-color: #48BB78; color: white; border-color: #48BB78; } 
-        .wrong { background-color: #F56565; color: white; border-color: #F56565; } 
-        
-        .check-mark { 
-            font-size: 24px; 
-            color: white; 
-            position: absolute; 
-            top: 50%; 
-            right: 15px; 
-            transform: translateY(-50%); 
-            display: none; 
-            font-weight: bold; 
-        }
-        /* JS ile eklendiğinde görünsün */
-        .option-button .check-mark { display: none; }
-        .option-button.selected .check-mark, .option-button.correct .check-mark { display: block; }
-        
-        .progress-bar-container { height: 10px; background-color: #E2E8F0; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background-color: #48BB78; transition: width 0.3s; }
-        
-        .quiz-results { display: none; text-align: center; padding: 20px 0; }
-        .quiz-results h2 { color: #48BB78; font-size: 26px; margin-bottom: 10px; }
-        .quiz-results p { font-size: 16px; margin: 5px 0;}
-        .quiz-results b { font-size: 20px; color: #1976D2;}
-        
-        #restartQuizButton {
-            background-color: #1976D2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            margin-top: 15px;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        #restartQuizButton:hover { background-color: #1565C0; }
-    </style>
+        .correct { background-color: #48BB78; color: white; border-color: #48BB78; } 
+        .wrong { background-color: #F56565; color: white; border-color: #F56565; } 
+        
+        .check-mark { 
+            font-size: 24px; 
+            color: white; 
+            position: absolute; 
+            top: 50%; 
+            right: 15px; 
+            transform: translateY(-50%); 
+            display: none; 
+            font-weight: bold; 
+        }
+        /* JS ile eklendiğinde görünsün */
+        .option-button .check-mark { display: none; }
+        .option-button.selected .check-mark, .option-button.correct .check-mark { display: block; }
+        
+        .progress-bar-container { height: 10px; background-color: #E2E8F0; border-radius: 5px; margin-bottom: 20px; overflow: hidden; }
+        .progress-bar { height: 100%; width: 0%; background-color: #48BB78; transition: width 0.3s; }
+        
+        .quiz-results { display: none; text-align: center; padding: 20px 0; }
+        .quiz-results h2 { color: #48BB78; font-size: 26px; margin-bottom: 10px; }
+        .quiz-results p { font-size: 16px; margin: 5px 0;}
+        .quiz-results b { font-size: 20px; color: #1976D2;}
+        
+        #restartQuizButton {
+            background-color: #1976D2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #restartQuizButton:hover { background-color: #1565C0; }
+    </style>
 </head>
 <body>
 
-    <div id="quizOverlay" class="overlay"></div>
+    <div id="quizOverlay" class="overlay"></div>
 
-    <div id="card-container"></div>
-    
-    <div class="info-bar">
-        <span id="info-text">Yükleniyor...</span>
-    </div>
-    <div class="nav-hint">İpucu: Kartları değiştirmek için **Kartın üzerine tıklayın** veya **Yön tuşlarını** kullanın (← / →). Kelimeyi dinlemek için **↑** (Yukarı Ok) tuşuna basın.</div>
-    
-    <div class="top-buttons">
-        <button id="toggleQuizButton">Kelime Testine Başla 🧠</button>
-    </div>
+    <div id="card-container"></div>
+    
+    <div class="info-bar">
+        <span id="info-text">Yükleniyor...</span>
+    </div>
+    <div class="nav-hint">İpucu: Kartları değiştirmek için **Kartın üzerine tıklayın** veya **Yön tuşlarını** kullanın (← / →). Kelimeyi dinlemek için **↑** (Yukarı Ok) tuşuna basın.</div>
+    
+    <div class="top-buttons">
+        <button id="toggleQuizButton">Kelime Testine Başla 🧠</button>
+    </div>
 
-    <div id="quizContainer" class="quiz-container">
-        <div class="quiz-header">
-            <span id="quizBackButton" style="cursor: pointer; font-size: 24px;" title="Kapat">&times;</span>
-            <span id="quizProgress">1/20</span>
-        </div>
-        <div class="progress-bar-container">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
-        <div id="questionArea">
-            <span class="speaker-icon" onclick="speakQuizWord(document.getElementById('currentWord').textContent)">🔊</span>
-            <div class="quiz-word-box" id="currentWord"></div>
-            <div id="optionsContainer"></div>
-        </div>
-        <div id="resultsScreen" class="quiz-results">
-            <h2>Test Bitti! 🚀</h2>
-            <p>Toplam Soru: <b><span id="totalQuestionsCount">0</span></b></p>
-            <p>Doğru Cevap: <b><span id="correctCount">0</span></b></p>
-            <p>Yanlış Cevap: <b><span id="wrongCount">0</span></b></p>
-            <button id="restartQuizButton">Tekrar Başlat</button>
-        </div>
-    </div>
+    <div id="quizContainer" class="quiz-container">
+        <div class="quiz-header">
+            <span id="quizBackButton" style="cursor: pointer; font-size: 24px;" title="Kapat">&times;</span>
+            <span id="quizProgress">1/20</span>
+        </div>
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+        <div id="questionArea">
+            <span class="speaker-icon" onclick="speakQuizWord(document.getElementById('currentWord').textContent)">🔊</span>
+            <div class="quiz-word-box" id="currentWord"></div>
+            <div id="optionsContainer"></div>
+        </div>
+        <div id="resultsScreen" class="quiz-results">
+            <h2>Test Bitti! 🚀</h2>
+            <p>Toplam Soru: <b><span id="totalQuestionsCount">0</span></b></p>
+            <p>Doğru Cevap: <b><span id="correctCount">0</span></b></p>
+            <p>Yanlış Cevap: <b><span id="wrongCount">0</span></b></p>
+            <button id="restartQuizButton">Tekrar Başlat</button>
+        </div>
+    </div>
 
-    <script>
-        // --- DEĞİŞKEN TANIMLAMALARI ---
-        const wordList = [
-            // YENİ KELİME LİSTESİ BURADA!
-            { word: "company", meaning: "şirket, arkadaşlık", example_en: "She works for a large technology [company].", example_tr: "Büyük bir teknoloji şirketinde çalışıyor.", synonyms: "firm, corporation, association", image_url: "https://png.pngtree.com/png-vector/20250625/ourlarge/pngtree-3d-business-building-illustration-png-image_16569116.png" },
-            { word: "compare", meaning: "karşılaştırmak", example_en: "It's difficult to [compare] the two products.", example_tr: "İki ürünü karşılaştırmak zor.", synonyms: "contrast, equate, liken", image_url: "https://png.pngtree.com/png-vector/20250109/ourmid/pngtree-3d-scales-of-justice-icon-png-image_15277180.png" },
-            { word: "complete", meaning: "tamamlamak, tam", example_en: "Did you [complete] your homework?", example_tr: "Ödevini tamamladın mı?", synonyms: "finish, conclude, entire", image_url: "https://png.pngtree.com/png-vector/20250201/ourlarge/pngtree-3d-checklist-icon-png-image_15370211.png" },
-            { word: "computer", meaning: "bilgisayar", example_en: "He bought a new [computer] for his studies.", example_tr: "Çalışmaları için yeni bir bilgisayar aldı.", synonyms: "PC, laptop, machine", image_url: "https://png.pngtree.com/png-vector/20250621/ourmid/pngtree-3d-desktop-computer-icon-in-minimalist-style-vector-png-image_16556100.png" },
-            { word: "concert", meaning: "konser", example_en: "We have tickets for the rock [concert] tonight.", example_tr: "Bu geceki rock konseri için biletlerimiz var.", synonyms: "gig, performance, show", image_url: "https://png.pngtree.com/png-vector/20250620/ourlarge/pngtree-3d-stage-with-lights-and-microphone-vector-png-image_16553896.png" },
-            { word: "conversation", meaning: "sohbet, konuşma", example_en: "They had a long [conversation] about their plans.", example_tr: "Planları hakkında uzun bir sohbet ettiler.", synonyms: "talk, discussion, chat", image_url: "https://png.pngtree.com/png-vector/20250106/ourmid/pngtree-two-people-talking-3d-icon-png-image_15234505.png" },
-            { word: "cook", meaning: "pişirmek, aşçı", example_en: "I love to [cook] Italian food.", example_tr: "İtalyan yemekleri pişirmeyi severim.", synonyms: "prepare food, chef", image_url: "https://png.pngtree.com/png-vector/20241016/ourmid/pngtree-3d-chef-hat-icon-vector-png-image_13778523.png" },
-            { word: "cooking", meaning: "yemek pişirme", example_en: "[Cooking] is one of her favorite hobbies.", example_tr: "Yemek pişirme, en sevdiği hobilerden biridir.", synonyms: "cuisine, meal preparation", image_url: "https://png.pngtree.com/png-vector/20250725/ourlarge/pngtree-a-3d-realistic-cooking-pot-icon-png-image_16870020.webp" },
-            { word: "cool", meaning: "serin, havalı", example_en: "The weather is [cool] and pleasant today.", example_tr: "Hava bugün serin ve hoş.", synonyms: "chilly, fashionable, great", image_url: "https://png.pngtree.com/png-vector/20240902/ourmid/pngtree-blue-and-white-air-conditioner-3d-icon-png-image_12411516.png" },
-            { word: "correct", meaning: "doğru, düzeltmek", example_en: "All your answers were [correct].", example_tr: "Tüm cevapların doğruydu.", synonyms: "accurate, right, rectify", image_url: "https://png.pngtree.com/png-vector/20250702/ourmid/pngtree-3d-green-check-mark-icon-png-image_16597148.webp" },
-            { word: "cost", meaning: "maliyet, mal olmak", example_en: "The total [cost] of the trip was high.", example_tr: "Gezinin toplam maliyeti yüksekti.", synonyms: "price, expense, charge", image_url: "https://png.pngtree.com/png-vector/20250711/ourlarge/pngtree-3d-silver-coin-icon-png-image_16625801.webp" },
-            { word: "could", meaning: "-ebilirdi, -ebilmek", example_en: "I [could] swim well when I was young.", example_tr: "Gençken iyi yüzebiliyordum.", synonyms: "was able to, possibility", image_url: "https://png.pngtree.com/png-vector/20250717/ourmid/pngtree-3d-human-hand-pointing-up-to-sky-illustration-png-image_16652458.png" },
-            { word: "country", meaning: "ülke, kırsal bölge", example_en: "Which [country] would you like to visit next?", example_tr: "Bundan sonra hangi ülkeyi ziyaret etmek istersin?", synonyms: "nation, land, rural area", image_url: "https://png.pngtree.com/png-vector/20240905/ourmid/pngtree-globe-earth-icon-in-3d-style-png-image_12450849.png" },
-            { word: "course", meaning: "kurs, ders, yol", example_en: "She took a photography [course].", example_tr: "Bir fotoğrafçılık kursu aldı.", synonyms: "class, lesson, route", image_url: "https://png.pngtree.com/png-vector/20250106/ourlarge/pngtree-3d-graduation-cap-icon-education-symbol-png-image_15234568.png" },
-            { word: "cousin", meaning: "kuzen", example_en: "My favorite [cousin] lives in İzmir.", example_tr: "En sevdiğim kuzenim İzmir'de yaşıyor.", synonyms: "relative", image_url: "https://png.pngtree.com/png-vector/20240722/ourmid/pngtree-3d-happy-family-icon-with-mother-father-and-children-vector-png-image_12948956.png" },
-            { word: "cow", meaning: "inek", example_en: "We saw a [cow] grazing in the field.", example_tr: "Tarlada otlayan bir inek gördük.", synonyms: "cattle, bovine", image_url: "https://png.pngtree.com/png-vector/20250529/ourmid/pngtree-cartoon-cow-3d-illustration-png-image_16428751.png" },
-            { word: "cream", meaning: "krema, krem", example_en: "Would you like some [cream] with your dessert?", example_tr: "Tatlına biraz krema ister misin?", synonyms: "lotion, dairy product", image_url: "https://png.pngtree.com/png-vector/20241018/ourmid/pngtree-3d-whipped-cream-icon-vector-png-image_13788229.png" },
-            { word: "create", meaning: "oluşturmak, yaratmak", example_en: "We need to [create] a new strategy.", example_tr: "Yeni bir strateji oluşturmalıyız.", synonyms: "make, produce, invent", image_url: "https://png.pngtree.com/png-vector/20250201/ourlarge/pngtree-3d-lightbulb-and-gear-icon-for-innovation-png-image_15370214.png" },
-            { word: "culture", meaning: "kültür", example_en: "Learning about a new [culture] is fascinating.", example_tr: "Yeni bir kültürü öğrenmek büyüleyici.", synonyms: "society, tradition, art", image_url: "https://png.pngtree.com/png-vector/20250629/ourlarge/pngtree-3d-museum-icon-with-art-and-history-symbols-png-image_16584281.png" },
-            { word: "cup", meaning: "fincan, kupa", example_en: "I drink tea from my favorite [cup].", example_tr: "En sevdiğim fincandan çay içerim.", synonyms: "mug, trophy, container", image_url: "https://png.pngtree.com/png-vector/20250711/ourmid/pngtree-a-3d-realistic-porcelain-cup-icon-png-image_16625804.webp" }
-        ];
+    <script>
+        // --- DEĞİŞKEN TANIMLAMALARI ---
+        const wordList = [
+            // YENİ KELİMELER EKLENDİ
+            { word: "company", meaning: "şirket, arkadaşlık", example_en: "She works for a large software [company].", example_tr: "Büyük bir yazılım şirketinde çalışıyor.", synonyms: "firm, corporation, companionship", image_url: "https://png.pngtree.com/png-vector/20240909/ourmid/pngtree-3d-icon-of-a-company-or-corporate-building-png-image_13647318.png" },
+            { word: "compare", meaning: "karşılaştırmak", example_en: "You should [compare] prices before you buy it.", example_tr: "Satın almadan önce fiyatları karşılaştırmalısın.", synonyms: "contrast, equate, liken", image_url: "https://png.pngtree.com/png-vector/20250621/ourmid/pngtree-3d-compare-icon-with-up-and-down-arrows-png-image_16568285.webp" },
+            { word: "complete", meaning: "tamamlamak, eksiksiz", example_en: "I need two weeks to [complete] the project.", example_tr: "Projeyi tamamlamak için iki haftaya ihtiyacım var.", synonyms: "finish, conclude, full, total", image_url: "https://png.pngtree.com/png-vector/20240706/ourmid/pngtree-3d-green-check-mark-icon-in-a-circle-png-image_12891334.png" },
+            { word: "computer", meaning: "bilgisayar", example_en: "My [computer] is too slow for gaming.", example_tr: "Bilgisayarım oyun oynamak için çok yavaş.", synonyms: "PC, machine, device", image_url: "https://png.pngtree.com/png-vector/20250720/ourmid/pngtree-3d-desktop-computer-icon-with-monitor-and-keyboard-png-image_16843477.webp" },
+            { word: "concert", meaning: "konser", example_en: "We bought tickets for the pop [concert].", example_tr: "Pop konseri için bilet aldık.", synonyms: "show, performance, gig", image_url: "https://png.pngtree.com/png-vector/20240608/ourmid/pngtree-3d-rock-band-concert-stage-set-with-drums-and-guitar-png-image_12507722.png" },
+            { word: "conversation", meaning: "konuşma, sohbet", example_en: "I had a long [conversation] with my friend.", example_tr: "Arkadaşımla uzun bir sohbet ettim.", synonyms: "talk, discussion, chat", image_url: "https://png.pngtree.com/png-vector/20240620/ourmid/pngtree-3d-speech-bubbles-icon-communication-and-chat-symbol-png-image_16543163.webp" },
+            { word: "cook", meaning: "yemek pişirmek, aşçı", example_en: "Can you [cook] a simple dinner tonight?", example_tr: "Bu akşam basit bir akşam yemeği pişirebilir misin?", synonyms: "prepare, chef, baker", image_url: "https://png.pngtree.com/png-vector/20240628/ourmid/pngtree-3d-cartoon-male-chef-with-a-big-smile-png-image_12803884.png" },
+            { word: "cooking", meaning: "yemek yapma, aşçılık", example_en: "[Cooking] is one of my favorite hobbies.", example_tr: "Yemek yapmak en sevdiğim hobilerden biri.", synonyms: "cuisine, meal preparation", image_url: "https://png.pngtree.com/png-vector/20240410/ourmid/pngtree-3d-icon-of-a-pot-and-cooking-utensil-representing-home-cooking-png-image_15949511.png" },
+            { word: "cool", meaning: "serin, harika", example_en: "It is a nice and [cool] day today.", example_tr: "Bugün güzel ve serin bir gün.", synonyms: "chilly, refreshing, great, awesome", image_url: "https://png.pngtree.com/png-vector/20250624/ourmid/pngtree-3d-blue-ice-cube-with-a-water-splash-effect-png-image_16578036.webp" },
+            { word: "correct", meaning: "doğru, düzeltmek", example_en: "The [correct] answer is 'B'.", example_tr: "Doğru cevap 'B'dir.", synonyms: "right, accurate, fix, amend", image_url: "https://png.pngtree.com/png-vector/20240506/ourmid/pngtree-green-check-mark-icon-3d-rendering-png-image_16235805.png" },
+            { word: "cost", meaning: "mal olmak, maliyet", example_en: "How much does this new phone [cost]?", example_tr: "Bu yeni telefonun maliyeti ne kadar?", synonyms: "price, expense, value", image_url: "https://png.pngtree.com/png-vector/20240508/ourmid/pngtree-3d-render-money-bag-icon-and-price-tag-shopping-concept-png-image_16248906.png" },
+            { word: "could", meaning: "yapabilirdi (can'in geçmişi)", example_en: "I [could] swim well when I was young.", example_tr: "Gençken iyi yüzebiliyordum.", synonyms: "was able to, capability", image_url: "https://png.pngtree.com/png-vector/20240909/ourmid/pngtree-3d-icon-of-a-muscled-arm-flexing-to-show-strength-png-image_13647248.png" },
+            { word: "country", meaning: "ülke, kırsal bölge", example_en: "France is a beautiful [country].", example_tr: "Fransa güzel bir ülkedir.", synonyms: "nation, state, rural area", image_url: "https://png.pngtree.com/png-vector/20250711/ourmid/pngtree-3d-globe-icon-representing-global-connection-and-world-map-png-image_16625807.webp" },
+            { word: "course", meaning: "ders, rota", example_en: "I'm taking an online coding [course].", example_tr: "Online bir kodlama dersi alıyorum.", synonyms: "class, lesson, path, direction", image_url: "https://png.pngtree.com/png-vector/20250720/ourmid/pngtree-3d-online-course-icon-on-a-laptop-screen-png-image_16843403.webp" },
+            { word: "cousin", meaning: "kuzen", example_en: "My [cousin] lives in Canada.", example_tr: "Kuzenim Kanada'da yaşıyor.", synonyms: "relative, kin, family member", image_url: "https://png.pngtree.com/png-vector/20250523/ourmid/pngtree-3d-friendly-cartoon-family-icon-png-image_16327774.png" },
+            { word: "cow", meaning: "inek", example_en: "A [cow] produces milk.", example_tr: "Bir inek süt üretir.", synonyms: "bovine, livestock", image_url: "https://png.pngtree.com/png-vector/20250724/ourmid/pngtree-3d-realistic-cow-icon-in-a-field-png-image_16864192.webp" },
+            { word: "cream", meaning: "krema, krem", example_en: "I'd like some [cream] with my coffee.", example_tr: "Kahvemin yanında biraz krema rica ediyorum.", synonyms: "dairy, lotion, ointment", image_url: "https://png.pngtree.com/png-vector/20250710/ourmid/pngtree-3d-swirl-of-whipped-cream-icon-png-image_16622616.webp" },
+            { word: "create", meaning: "oluşturmak, yaratmak", example_en: "We need to [create] a new strategy.", example_tr: "Yeni bir strateji oluşturmamız gerekiyor.", synonyms: "make, invent, design", image_url: "https://png.pngtree.com/png-vector/20240904/ourmid/pngtree-3d-stylized-lightbulb-and-gear-icon-representing-idea-generation-png-image_13554876.png" },
+            { word: "culture", meaning: "kültür", example_en: "Studying different [culture]s is fascinating.", example_tr: "Farklı kültürleri incelemek büyüleyici.", synonyms: "traditions, society, heritage", image_url: "https://png.pngtree.com/png-vector/20240723/ourmid/pngtree-3d-icon-of-a-world-globe-with-diverse-human-figures-png-image_16773516.webp" },
+            { word: "cup", meaning: "fincan, kupa", example_en: "She accidentally broke her favorite coffee [cup].", example_tr: "Yanlışlıkla en sevdiği kahve fincanını kırdı.", synonyms: "mug, container, trophy", image_url: "https://png.pngtree.com/png-vector/20240902/ourmid/pngtree-3d-porcelain-coffee-cup-icon-with-steam-png-image_13508129.png" }
+        ];
 
-        // Global DOM Element Seçimleri
-        const container = document.getElementById('card-container');
-        const infoText = document.getElementById('info-text');
-        
-        // Quiz DOM Element Seçimleri
-        const quizContainer = document.getElementById("quizContainer");
-        const toggleQuizButton = document.getElementById("toggleQuizButton");
-        const quizBackButton = document.getElementById('quizBackButton');
-        const quizProgress = document.getElementById('quizProgress');
-        const progressBar = document.getElementById('progressBar');
-        const currentWordDiv = document.getElementById('currentWord');
-        const optionsContainer = document.getElementById('optionsContainer');
-        const questionArea = document.getElementById('questionArea');
-        const resultsScreen = document.getElementById('resultsScreen');
-        const correctCountSpan = document.getElementById('correctCount');
-        const totalQuestionsCountSpan = document.getElementById('totalQuestionsCount');
-        const wrongCountSpan = document.getElementById('wrongCount');
-        const restartQuizButton = document.getElementById('restartQuizButton');
-        const quizOverlay = document.getElementById('quizOverlay');
+        // Global DOM Element Seçimleri
+        const container = document.getElementById('card-container');
+        const infoText = document.getElementById('info-text');
+        
+        // Quiz DOM Element Seçimleri
+        const quizContainer = document.getElementById("quizContainer");
+        const toggleQuizButton = document.getElementById("toggleQuizButton");
+        const quizBackButton = document.getElementById('quizBackButton');
+        const quizProgress = document.getElementById('quizProgress');
+        const progressBar = document.getElementById('progressBar');
+        const currentWordDiv = document.getElementById('currentWord');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionArea = document.getElementById('questionArea');
+        const resultsScreen = document.getElementById('resultsScreen');
+        const correctCountSpan = document.getElementById('correctCount');
+        const totalQuestionsCountSpan = document.getElementById('totalQuestionsCount');
+        const wrongCountSpan = document.getElementById('wrongCount');
+        const restartQuizButton = document.getElementById('restartQuizButton');
+        const quizOverlay = document.getElementById('quizOverlay');
 
-        // Durum Değişkenleri
-        let currentIndex = 0;
-        let quizDataShuffled = [];
-        let currentQuestionIndexQuiz = 0;
-        let scoreQuiz = 0;
-        const allTranslations = wordList.map(q => q.meaning); // Quiz için tüm anlamlar
+        // Durum Değişkenleri
+        let currentIndex = 0;
+        let quizDataShuffled = [];
+        let currentQuestionIndexQuiz = 0;
+        let scoreQuiz = 0;
+        const allTranslations = wordList.map(q => q.meaning); // Quiz için tüm anlamlar
 
-        // --- FONKSİYONLAR ---
+        // --- FONKSİYONLAR ---
 
-        // Seslendirme
-        function speakWord(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel(); // Varsa önceki sesi durdur
-                const msg = new SpeechSynthesisUtterance();
-                msg.text = text;
-                msg.lang = 'en-US'; 
-                msg.rate = 0.9; 
-                window.speechSynthesis.speak(msg);
-            } else {
-                console.warn("Tarayıcı metin okuma özelliğini desteklemiyor.");
-            }
-        }
+        // Seslendirme
+        function speakWord(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Varsa önceki sesi durdur
+                const msg = new SpeechSynthesisUtterance();
+                msg.text = text;
+                msg.lang = 'en-US'; 
+                msg.rate = 0.9; 
+                window.speechSynthesis.speak(msg);
+            } else {
+                console.warn("Tarayıcı metin okuma özelliğini desteklemiyor.");
+            }
+        }
 
-        // Quiz Seslendirme
-        function speakQuizWord(text) {
-             speakWord(text);
-        }
+        // Quiz Seslendirme
+        function speakQuizWord(text) {
+              speakWord(text);
+        }
 
-        // Bilgi Çubuğu Güncelleme
-        function updateInfoBar() {
-            infoText.textContent = `Kart ${currentIndex + 1} / ${wordList.length}`;
-        }
+        // Bilgi Çubuğu Güncelleme
+        function updateInfoBar() {
+            infoText.textContent = `Kart ${currentIndex + 1} / ${wordList.length}`;
+        }
 
-        // Kart Oluşturma
-        function createCard(data) {
-            const { word, meaning, example_en, example_tr, synonyms, image_url } = data;
-            
-            const highlightedExample = example_en.replace(/\[(.*?)\]/g, (match, p1) => `<span class="highlight">${p1}</span>`);
-            const synonymsText = synonyms || '-';
-            const safeImageUrl = image_url || 'https://via.placeholder.com/350x180?text=G%C3%B6rsel+Yok'; 
-            
-            // Not: speakWord içinde ' işareti hatası olmasın diye replace ile kaçış karakteri ekliyoruz.
-            const safeWordForAudio = word.replace(/'/g, "\\'");
+        // Kart Oluşturma
+        function createCard(data) {
+            const { word, meaning, example_en, example_tr, synonyms, image_url } = data;
+            
+            const highlightedExample = example_en.replace(/\[(.*?)\]/g, (match, p1) => `<span class="highlight">${p1}</span>`);
+            const synonymsText = synonyms || '-';
+            const safeImageUrl = image_url || 'https://via.placeholder.com/350x180?text=G%C3%B6rsel+Yok'; 
+            
+            // Not: speakWord içinde ' işareti hatası olmasın diye replace ile kaçış karakteri ekliyoruz.
+            const safeWordForAudio = word.replace(/'/g, "\\'");
 
-            const cardHTML = `
-                <div class="card" id="active-card" onclick="nextCard(event)"> 
-                    
-                    <div class="word-image-display">
-                        <img src="${safeImageUrl}" 
-                            alt="${word} görseli"
-                            onerror="this.onerror=null; this.src='https://via.placeholder.com/350x180?text=G%C3%B6rsel+Y%C3%BCklenemedi';">
-                    </div>
+            const cardHTML = `
+                <div class="card" id="active-card" onclick="nextCard(event)"> 
+                    
+                    <div class="word-image-display">
+                        <img src="${safeImageUrl}" 
+                            alt="${word} görseli"
+                            onerror="this.onerror=null; this.src='https://via.placeholder.com/350x180?text=G%C3%B6rsel+Y%C3%BCklenemedi';">
+                    </div>
 
-                    <div class="header">
-                        <div class="word-row">
-                            <span class="speaker-icon-card" title="Dinle" onclick="event.stopPropagation(); speakWord('${safeWordForAudio}')">🔊</span>
-                            <h1>${word}</h1>
-                        </div>
-                        <p class="meaning">${meaning}</p>
-                    </div>
+                    <div class="header">
+                        <div class="word-row">
+                            <span class="speaker-icon-card" title="Dinle" onclick="event.stopPropagation(); speakWord('${safeWordForAudio}')">🔊</span>
+                            <h1>${word}</h1>
+                        </div>
+                        <p class="meaning">${meaning}</p>
+                    </div>
 
-                    <div class="box">
-                        <div class="row">
-                            <span class="tag">Ör.</span>
-                            <div class="content">
-                                <p class="en-sentence">${highlightedExample}</p>
-                                <div class="divider"></div>
-                                <p class="tr-sentence">${example_tr}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <div class="box">
+                        <div class="row">
+                            <span class="tag">Ör.</span>
+                            <div class="content">
+                                <p class="en-sentence">${highlightedExample}</p>
+                                <div class="divider"></div>
+                                <p class="tr-sentence">${example_tr}</p>
+                            </div>
+                        </div>
+                    </div>
 
-                    <div class="box small">
-                        <div class="row">
-                            <span class="tag">Eş A.</span>
-                            <div class="content">
-                                <p class="synonyms-text">${synonymsText}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            container.innerHTML = cardHTML;
-            
-            // Animasyon için class ekle
-            setTimeout(() => {
-                const card = document.getElementById('active-card');
-                if(card) card.classList.add('active');
-            }, 50);
+                    <div class="box small">
+                        <div class="row">
+                            <span class="tag">Eş A.</span>
+                            <div class="content">
+                                <p class="synonyms-text">${synonymsText}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.innerHTML = cardHTML;
+            
+            // Animasyon için class ekle
+            setTimeout(() => {
+                const card = document.getElementById('active-card');
+                if(card) card.classList.add('active');
+            }, 50);
 
-            updateInfoBar();
-        }
-        
-        // Sonraki Kart
-        const nextCard = (event) => {
-            // Speaker ikonuna tıklandıysa kartı çevirme
-            if (event && event.target.closest('.speaker-icon-card')) {
-                return;
-            }
-            // Quiz açıkken kartları değiştirmeyi engelle
-            if (quizContainer && (quizContainer.style.display !== 'none' && quizContainer.style.display !== '')) {
-                return;
-            }
+            updateInfoBar();
+        }
+        
+        // Sonraki Kart
+        const nextCard = (event) => {
+            // Speaker ikonuna tıklandıysa kartı çevirme
+            if (event && event.target.closest('.speaker-icon-card')) {
+                return;
+            }
+            // Quiz açıkken kartları değiştirmeyi engelle
+            if (quizContainer && (quizContainer.style.display !== 'none' && quizContainer.style.display !== '')) {
+                return;
+            }
 
-            const activeCard = document.getElementById('active-card');
-            if (activeCard) {
-                activeCard.classList.remove('active');
-                activeCard.style.transform = 'translateX(100%) scale(0.9) rotate(5deg)'; 
-                activeCard.style.opacity = '0';
-            }
-            
-            window.speechSynthesis.cancel();
+            const activeCard = document.getElementById('active-card');
+            if (activeCard) {
+                activeCard.classList.remove('active');
+                activeCard.style.transform = 'translateX(100%) scale(0.9) rotate(5deg)'; 
+                activeCard.style.opacity = '0';
+            }
+            
+            window.speechSynthesis.cancel();
 
-            setTimeout(() => {
-                currentIndex = (currentIndex + 1) % wordList.length;
-                createCard(wordList[currentIndex]);
-            }, 300); 
-        };
-        
-        // Önceki Kart
-        const prevCard = () => {
-             // Quiz açıkken kartları değiştirmeyi engelle
-            if (quizContainer && (quizContainer.style.display !== 'none' && quizContainer.style.display !== '')) {
-                return;
-            }
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % wordList.length;
+                createCard(wordList[currentIndex]);
+            }, 300); 
+        };
+        
+        // Önceki Kart
+        const prevCard = () => {
+             // Quiz açıkken kartları değiştirmeyi engelle
+            if (quizContainer && (quizContainer.style.display !== 'none' && quizContainer.style.display !== '')) {
+                return;
+            }
 
-            const activeCard = document.getElementById('active-card');
-            if (activeCard) {
-                activeCard.classList.remove('active');
-                activeCard.style.transform = 'translateX(-100%) scale(0.9) rotate(-5deg)';
-                activeCard.style.opacity = '0';
-            }
+            const activeCard = document.getElementById('active-card');
+            if (activeCard) {
+                activeCard.classList.remove('active');
+                activeCard.style.transform = 'translateX(-100%) scale(0.9) rotate(-5deg)';
+                activeCard.style.opacity = '0';
+            }
 
-            window.speechSynthesis.cancel();
+            window.speechSynthesis.cancel();
 
-            setTimeout(() => {
-                currentIndex = (currentIndex - 1 + wordList.length) % wordList.length;
-                createCard(wordList[currentIndex]);
-            }, 300); 
-        };
+            setTimeout(() => {
+                currentIndex = (currentIndex - 1 + wordList.length) % wordList.length;
+                createCard(wordList[currentIndex]);
+            }, 300); 
+        };
 
-        // Klavye Kontrolleri
-        document.addEventListener('keydown', (e) => {
-            // Quiz kapalıysa çalıştır
-            const isQuizOpen = quizContainer.style.display === 'block';
-            
-            if (!isQuizOpen) {
-                 if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
-                    e.preventDefault(); 
-                    nextCard();
-                } else if (e.key === 'ArrowLeft') {
-                    e.preventDefault();
-                    prevCard();
-                } else if (e.key === 'ArrowUp') {
-                    e.preventDefault();
-                    speakWord(wordList[currentIndex].word);
-                }
-            }
-        });
+        // Klavye Kontrolleri
+        document.addEventListener('keydown', (e) => {
+            // Quiz kapalıysa çalıştır
+            const isQuizOpen = quizContainer.style.display === 'block';
+            
+            if (!isQuizOpen) {
+                 if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault(); 
+                    nextCard();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevCard();
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    speakWord(wordList[currentIndex].word);
+                }
+            }
+        });
 
-        // Global fonksiyon olarak ata (HTML onclick için gerekli olabilir)
-        window.nextCard = nextCard; 
-        window.speakWord = speakWord;
-        window.speakQuizWord = speakQuizWord;
+        // Global fonksiyon olarak ata (HTML onclick için gerekli olabilir)
+        window.nextCard = nextCard; 
+        window.speakWord = speakWord;
+        window.speakQuizWord = speakQuizWord;
 
-        // --- QUIZ MANTIK FONKSİYONLARI ---
+        // --- QUIZ MANTIK FONKSİYONLARI ---
 
-        // Karıştırma
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+        // Karıştırma
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
-        // Seçenekleri Üretme
-        function generateWordOptions(correctWord, correctMeaning) {
-            // Doğru cevap dışındaki tüm anlamları al
-            const incorrectOptions = allTranslations.filter(t => t !== correctMeaning);
-            // Rastgele 3 yanlış seç
-            let chosenIncorrect = shuffleArray(incorrectOptions).slice(0, 3);
-            // Doğru cevabı ekle
-            let options = [...chosenIncorrect, correctMeaning];
-            // Hepsini karıştır
-            return shuffleArray(options); 
-        }
+        // Seçenekleri Üretme
+        function generateWordOptions(correctWord, correctMeaning) {
+            // Doğru cevap dışındaki tüm anlamları al
+            const incorrectOptions = allTranslations.filter(t => t !== correctMeaning);
+            // Rastgele 3 yanlış seç
+            let chosenIncorrect = shuffleArray(incorrectOptions).slice(0, 3);
+            // Doğru cevabı ekle
+            let options = [...chosenIncorrect, correctMeaning];
+            // Hepsini karıştır
+            return shuffleArray(options); 
+        }
 
-        // Soruyu Ekrana Basma
-        function displayWordQuestion() {
-            questionArea.style.display = 'block';
-            resultsScreen.style.display = 'none';
+        // Soruyu Ekrana Basma
+        function displayWordQuestion() {
+            questionArea.style.display = 'block';
+            resultsScreen.style.display = 'none';
 
-            if (currentQuestionIndexQuiz >= quizDataShuffled.length) {
-                showWordQuizResults();
-                return;
-            }
+            if (currentQuestionIndexQuiz >= quizDataShuffled.length) {
+                showWordQuizResults();
+                return;
+            }
 
-            const currentQ = quizDataShuffled[currentQuestionIndexQuiz];
-            currentWordDiv.textContent = currentQ.word; // Soru: İngilizce Kelime
-            quizProgress.textContent = `${currentQuestionIndexQuiz + 1}/${quizDataShuffled.length}`;
-            const progressPercentage = (currentQuestionIndexQuiz / quizDataShuffled.length) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
-            
-            optionsContainer.innerHTML = '';
-            
-            const options = generateWordOptions(currentQ.word, currentQ.meaning); 
+            const currentQ = quizDataShuffled[currentQuestionIndexQuiz];
+            currentWordDiv.textContent = currentQ.word; // Soru: İngilizce Kelime
+            quizProgress.textContent = `${currentQuestionIndexQuiz + 1}/${quizDataShuffled.length}`;
+            const progressPercentage = (currentQuestionIndexQuiz / quizDataShuffled.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            
+            optionsContainer.innerHTML = '';
+            
+            const options = generateWordOptions(currentQ.word, currentQ.meaning); 
 
-            options.forEach(option => {
-                const button = document.createElement('button');
-                button.classList.add('option-button');
-                button.textContent = option;
-                button.setAttribute('data-answer', option);
-                button.onclick = () => checkWordAnswer(button, option, currentQ.meaning); 
-                
-                // Seçenek içine gizli check işareti ekle
-                const checkMark = document.createElement('span');
-                checkMark.classList.add('check-mark');
-                checkMark.textContent = '✓';
-                button.appendChild(checkMark);
+            options.forEach(option => {
+                const button = document.createElement('button');
+                button.classList.add('option-button');
+                button.textContent = option;
+                button.setAttribute('data-answer', option);
+                button.onclick = () => checkWordAnswer(button, option, currentQ.meaning); 
+                
+                // Seçenek içine gizli check işareti ekle
+                const checkMark = document.createElement('span');
+                checkMark.classList.add('check-mark');
+                checkMark.textContent = '✓';
+                button.appendChild(checkMark);
 
-                optionsContainer.appendChild(button);
-            });
-            window.speechSynthesis.cancel(); 
-        }
+                optionsContainer.appendChild(button);
+            });
+            window.speechSynthesis.cancel(); 
+        }
 
-        // Cevap Kontrolü
-        function checkWordAnswer(selectedButton, selectedAnswer, correctAnswer) {
-            // Tüm butonları devre dışı bırak
-            Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
-            
-            if (selectedAnswer === correctAnswer) {
-                selectedButton.classList.add('correct', 'selected');
-                scoreQuiz++;
-            } else {
-                selectedButton.classList.add('wrong');
-                // Doğru olanı yeşil yap
-                const correctButton = Array.from(optionsContainer.children).find(btn => btn.getAttribute('data-answer') === correctAnswer);
-                if (correctButton) {
-                    correctButton.classList.add('correct');
-                }
-            }
+        // Cevap Kontrolü
+        function checkWordAnswer(selectedButton, selectedAnswer, correctAnswer) {
+            // Tüm butonları devre dışı bırak
+            Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
+            
+            if (selectedAnswer === correctAnswer) {
+                selectedButton.classList.add('correct', 'selected');
+                scoreQuiz++;
+            } else {
+                selectedButton.classList.add('wrong');
+                // Doğru olanı yeşil yap
+                const correctButton = Array.from(optionsContainer.children).find(btn => btn.getAttribute('data-answer') === correctAnswer);
+                if (correctButton) {
+                    correctButton.classList.add('correct');
+                }
+            }
 
-            setTimeout(() => {
-                currentQuestionIndexQuiz++;
-                displayWordQuestion();
-            }, 1200); // Kullanıcının doğru cevabı görmesi için biraz bekle
-        }
-        
-        // Sonuç Ekranı
-        function showWordQuizResults() {
-            questionArea.style.display = 'none';
-            resultsScreen.style.display = 'block';
-            
-            const totalQuestions = quizDataShuffled.length;
-            const wrongCount = totalQuestions - scoreQuiz;
+            setTimeout(() => {
+                currentQuestionIndexQuiz++;
+                displayWordQuestion();
+            }, 1200); // Kullanıcının doğru cevabı görmesi için biraz bekle
+        }
+        
+        // Sonuç Ekranı
+        function showWordQuizResults() {
+            questionArea.style.display = 'none';
+            resultsScreen.style.display = 'block';
+            
+            const totalQuestions = quizDataShuffled.length;
+            const wrongCount = totalQuestions - scoreQuiz;
 
-            correctCountSpan.textContent = scoreQuiz;
-            totalQuestionsCountSpan.textContent = totalQuestions;
-            wrongCountSpan.textContent = wrongCount;
+            correctCountSpan.textContent = scoreQuiz;
+            totalQuestionsCountSpan.textContent = totalQuestions;
+            wrongCountSpan.textContent = wrongCount;
 
-            progressBar.style.width = '100%';
-        }
+            progressBar.style.width = '100%';
+        }
 
-        // Quiz Yeniden Başlatma
-        function restartWordQuiz() {
-            currentQuestionIndexQuiz = 0;
-            scoreQuiz = 0;
-            quizDataShuffled = shuffleArray([...wordList]); // Listenin kopyasını al ve karıştır
-            displayWordQuestion();
-        }
-        
-        // --- EVENT LISTENERS ---
-        const closeQuiz = () => {
-            quizContainer.style.display = 'none';
-            quizOverlay.style.display = 'none'; 
-            toggleQuizButton.style.display = 'block';
-            window.speechSynthesis.cancel();
-        };
+        // Quiz Yeniden Başlatma
+        function restartWordQuiz() {
+            currentQuestionIndexQuiz = 0;
+            scoreQuiz = 0;
+            quizDataShuffled = shuffleArray([...wordList]); // Listenin kopyasını al ve karıştır
+            displayWordQuestion();
+        }
+        
+        // --- EVENT LISTENERS ---
+        const closeQuiz = () => {
+            quizContainer.style.display = 'none';
+            quizOverlay.style.display = 'none'; 
+            toggleQuizButton.style.display = 'block';
+            window.speechSynthesis.cancel();
+        };
 
-        toggleQuizButton.addEventListener('click', () => {
-            quizContainer.style.display = 'block'; 
-            quizOverlay.style.display = 'block'; 
-            toggleQuizButton.style.display = 'none';
-            restartWordQuiz();
-        });
-        
-        // Kapatma butonu ve overlay tıklaması
-        quizBackButton.addEventListener('click', closeQuiz);
-        quizOverlay.addEventListener('click', closeQuiz);
+        toggleQuizButton.addEventListener('click', () => {
+            quizContainer.style.display = 'block'; 
+            quizOverlay.style.display = 'block'; 
+            toggleQuizButton.style.display = 'none';
+            restartWordQuiz();
+        });
+        
+        // Kapatma butonu ve overlay tıklaması
+        quizBackButton.addEventListener('click', closeQuiz);
+        quizOverlay.addEventListener('click', closeQuiz);
 
 
-        restartQuizButton.addEventListener('click', restartWordQuiz);
+        restartQuizButton.addEventListener('click', restartWordQuiz);
 
-        // Sayfa Yüklendiğinde Başlatma
-        document.addEventListener('DOMContentLoaded', function() {
-            if (wordList.length > 0) {
-                createCard(wordList[currentIndex]);
-            } else {
-                container.innerHTML = '<h2>Liste boş.</h2>';
-                infoText.textContent = 'Liste boş.';
-            }
-            // Başlangıçta quiz kapalı
-            quizContainer.style.display = 'none'; 
-            quizOverlay.style.display = 'none';
-        });
+        // Sayfa Yüklendiğinde Başlatma
+        document.addEventListener('DOMContentLoaded', function() {
+            if (wordList.length > 0) {
+                createCard(wordList[currentIndex]);
+            } else {
+                container.innerHTML = '<h2>Liste boş.</h2>';
+                infoText.textContent = 'Liste boş.';
+            }
+            // Başlangıçta quiz kapalı
+            quizContainer.style.display = 'none'; 
+            quizOverlay.style.display = 'none';
+        });
 
-    </script>
+    </script>
 </body>
 </html>
